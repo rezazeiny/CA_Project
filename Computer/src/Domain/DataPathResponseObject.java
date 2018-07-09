@@ -8,14 +8,14 @@ import java.util.Map;
 public class DataPathResponseObject {
     private boolean zero;
     private boolean neg;
-    Map<String, Integer> registers;
+    Map<String, String> registers;
 
 
-    public Map<String, Integer> getRegisters() {
+    public Map<String, String> getRegisters() {
         return registers;
     }
 
-    public void setRegisters(Map<String, Integer> registers) {
+    public void setRegisters(Map<String, String> registers) {
         this.registers = registers;
     }
 

@@ -6,7 +6,7 @@ package Component;
 public class Shifter {
 
 
-    public String path(boolean direction, String distance, String input) {
+    public String path(boolean direction, int distance, String input) {
         String result = new String();
 
         return result;

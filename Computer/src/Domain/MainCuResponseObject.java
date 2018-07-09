@@ -4,13 +4,13 @@ package Domain;
  * Created by amirmhp on 7/9/2018.
  */
 public class MainCuResponseObject {
-    private int pc;
+    private String pc;
 
-    public int getPc() {
+    public String getPc() {
         return pc;
     }
 
-    public void setPc(int pc) {
+    public void setPc(String pc) {
         this.pc = pc;
     }
 }

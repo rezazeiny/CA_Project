@@ -22,7 +22,7 @@ public class Main {
 
 
     private static void startCPU() {
-        int PC = 0;
+        String PC = 0;
         while (INSTs.size() > PC) {
             MainCuResponseObject result = controlUnit.executeCommand(INSTs.get(PC));
             PC = result.getPc();

@@ -16,6 +16,7 @@ public class ALU {
     }
 
 
+
     public boolean isZero() {
         return zero;
     }
