@@ -1,3 +1,6 @@
+import CPU.ControlUnit;
+import Domain.MainCuResponseObject;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
@@ -9,8 +12,10 @@ import java.util.Scanner;
  */
 public class Main {
     private static ArrayList<String> INSTs = new ArrayList<>();
+    private static ControlUnit controlUnit;
 
     public static void main(String[] args) throws FileNotFoundException, UnsupportedEncodingException {
+        controlUnit = new ControlUnit();
         getFromFile("Computer/INSTs.txt");
         startCPU();
     }
@@ -19,7 +24,8 @@ public class Main {
     private static void startCPU() {
         int PC = 0;
         while (INSTs.size() > PC) {
-            //todo: control unit get INSTs
+            MainCuResponseObject result = controlUnit.executeCommand(INSTs.get(PC));
+            PC = result.getPc();
         }
 
     }

@@ -1,6 +1,7 @@
 package CPU;
 
 import Domain.CTO;
+import Domain.DataPathResponseObject;
 import Domain.MainCuResponseObject;
 import Domain.State;
 
@@ -11,35 +12,51 @@ import java.util.Map;
  * Created by amirmhp on 7/9/2018.
  */
 public class ControlUnit {
-    Map<String, Integer> commandlevel = new HashMap<>();
-
-    public ControlUnit(){
-        commandlevel = new HashMap<>();
+    Map<String, Integer> commandLevel = new HashMap<>();
+    DataPath dataPath;
+    boolean neg = false;
+    boolean zero = false;
+    public ControlUnit() {
+        dataPath = new DataPath();
+        commandLevel = new HashMap<>();
         //todo fill this map
 
     }
 
     /**
      * flow method.
-     * 1 - getting command name
      * 2 - getting first state of command.
      * 3 - fires command and sends state to {@link DataPath#exertCto(CTO)} and gets a response object.
      * 4 - make a {@link MainCuResponseObject} and return
+     *
      * @param command
      * @return
      */
     public MainCuResponseObject executeCommand(String command) {
         //todo write a for on command levels, extract ctos and fire
-        return null;
+        State tempState = extractCommandStartState(command);
+        int levels = commandLevel.get(tempState.name) + 1;
+        CTO tempCto;
+        DataPathResponseObject tempResponseObject = new DataPathResponseObject();
+        for (int i = 0; i < levels; i++) {
+            tempCto = extractCtoFromState(tempState);
+            tempResponseObject = dataPath.exertCto(tempCto);
+            this.zero = tempResponseObject.isZero();
+            this.neg = tempResponseObject.isNeg();
+            tempState.level = tempState.level + 1;
+        }
+        MainCuResponseObject mainCuResponseObject = new MainCuResponseObject();
+        mainCuResponseObject.setPc(tempResponseObject.getRegisters().get("PC"));
+        return mainCuResponseObject;
     }
 
-    private State extractCommandStartState(String command){
+    private State extractCommandStartState(String command) {
         //todo fill fields of state and put the level = 1
         return null;
     }
 
 
-    private CTO extractCtoFromState(State state) {
+    private CTO extractCtoFromState (State state) {
         //TODO switch cases are here, get an state and extract cto
 
         return null;
