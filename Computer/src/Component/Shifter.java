@@ -1,8 +1,5 @@
 package Component;
 
-import static Component.Functions.convertBINtoHEX;
-import static Component.Functions.convertHEXtoBIN;
-
 /**
  * Created by amirmhp on 7/9/2018.
  */
@@ -24,5 +21,11 @@ public class Shifter {
             }
         }
         return convertBINtoHEX(result.toString());
+
+
+    public String path(boolean direction, int distance, String input) {
+        String result = new String();
+
+        return result;
     }
 }

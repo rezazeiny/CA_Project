@@ -77,6 +77,7 @@ public class ALU {
         return result.substring(result.length() - 32, result.length());
     }
 
+
     public boolean isZero() {
         return zero;
     }
