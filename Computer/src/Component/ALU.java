@@ -73,8 +73,8 @@ public class ALU {
             zero = false;
             neg = false;
         }
-        String result = "00000000000000000000000000000000" + Integer.toBinaryString(temp);
-        return result.substring(result.length() - 32, result.length());
+        String result = "00000000000000000000000000000000" + Integer.toString(temp, 16);
+        return result.substring(result.length() - 8, result.length());
     }
 
 

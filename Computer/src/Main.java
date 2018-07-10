@@ -22,9 +22,9 @@ public class Main {
 
 
     private static void startCPU() {
-        String PC = 0;
-        while (INSTs.size() > PC) {
-            MainCuResponseObject result = controlUnit.executeCommand(INSTs.get(PC));
+        String PC = "0";
+        while (INSTs.size() > Integer.parseInt(PC, 16)) {
+            MainCuResponseObject result = controlUnit.executeCommand(INSTs.get(Integer.parseInt(PC, 16)));
             PC = result.getPc();
         }
 

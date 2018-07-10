@@ -7,7 +7,6 @@ import Domain.DataPathResponseObject;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.Set;
 
 /**
@@ -15,7 +14,6 @@ import java.util.Set;
  */
 public class DataPath {
     ALU alu;
-    Shifter shifter;
     Map<String, Integer> register = new HashMap<>();
     Shifter shifter;
     Map<String, String> registers = new HashMap<>();

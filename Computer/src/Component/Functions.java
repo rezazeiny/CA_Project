@@ -2,18 +2,18 @@ package Component;
 
 import java.math.BigInteger;
 
-public final class Functions {
-    public static String convertHEXtoBIN(String input) {
+final class Functions {
+    static String convertHEXtoBIN(String input) {
         String temp = "00000000000000000000000000000000" + new BigInteger(input, 16).toString(2);
         return temp.substring(temp.length() - 32, temp.length());
     }
 
-    public static String convertBINtoHEX(String input) {
+    static String convertBINtoHEX(String input) {
         String temp = "00000000000000000000000000000000" + new BigInteger(input, 2).toString(16);
         return temp.substring(temp.length() - 8, temp.length());
     }
 
-    public static int convertHEXtoDEC(String input) {
+    static int convertHEXtoDEC(String input) {
         input = convertHEXtoBIN(input);
         int output;
         if (input.substring(0, 1).equals("1")) {
