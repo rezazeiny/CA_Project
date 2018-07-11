@@ -9,7 +9,7 @@ public class ShifterTest {
 
     @Test
     public void pathTest() throws Exception {
-        assertEquals("FFFFFFFF", shifter.path(true,8,"FFFFFFFF"));
+        assertEquals("FFFFFFFF", shifter.path(true, 8, "FFFFFFFF"));
         assertEquals("3FFFFFFF", shifter.path(true,1,"7FFFFFFF"));
         assertEquals("1FFFFFFF", shifter.path(true,2,"7FFFFFFF"));
         assertEquals("0FFFFFFF", shifter.path(true,3,"7FFFFFFF"));

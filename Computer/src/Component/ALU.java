@@ -1,12 +1,12 @@
 package Component;
-import static Component.Functions.convertHEXtoDEC;
+import CPU.CPU;
 
+import static Component.Functions.convertDECtoHEX;
+import static Component.Functions.convertHEXtoDEC;
 /**
  * Created by amirmhp on 7/9/2018.
  */
 public class ALU {
-    private boolean zero;
-    private boolean neg;
     public String path(String controlBits, String input1, String input2) {
         int first = convertHEXtoDEC(input1);
         int second = convertHEXtoDEC(input2);
@@ -63,6 +63,8 @@ public class ALU {
             default:
                 temp = -1;
         }
+        boolean zero;
+        boolean neg;
         if (temp == 0) {
             zero = true;
             neg = false;
@@ -73,16 +75,8 @@ public class ALU {
             zero = false;
             neg = false;
         }
-        String result = "00000000000000000000000000000000" + Integer.toString(temp, 16);
-        return result.substring(result.length() - 8, result.length());
-    }
-
-
-    public boolean isZero() {
-        return zero;
-    }
-
-    public boolean isNeg() {
-        return neg;
+        CPU.getInstance().getState().setNegative(neg);
+        CPU.getInstance().getState().setZero(zero);
+        return convertDECtoHEX(temp);
     }
 }

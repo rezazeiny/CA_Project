@@ -1,9 +1,9 @@
 package CPU;
 
 import Component.ALU;
+import Component.Register;
 import Component.Shifter;
 import Domain.CTO;
-import Domain.DataPathResponseObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,108 +12,73 @@ import java.util.Set;
 /**
  * Created by amirmhp on 7/9/2018.
  */
-public class DataPath {
-    ALU alu;
-    Map<String, Integer> register = new HashMap<>();
-    Shifter shifter;
-    Map<String, String> registers = new HashMap<>();
-    String busValue;
-    String aluInput1;
+class DataPath {
+    private Shifter shifter;
+    private ALU alu;
+    private Map<String, Register> registers;
+    private String busValue;
 
 
-
-    public DataPath() {
+    DataPath() {
+        busValue = "00000000";
         alu = new ALU();
         shifter = new Shifter();
-        registers.put("PC", "00000000");//from zero
-        registers.put("MDR", "00000000");
-        registers.put("MAR", "00000000");
-        registers.put("MBR", "00000000");
-        registers.put("SP", "00000080");//from 128
-        registers.put("SDR", "00000000");//secondary data register
-        registers.put("CPP", "00000100");//from 256
-        registers.put("LVP", "00000180");//from 384
+        registers = new HashMap<>();
+        registers.put("MAR", new Register("00000000"));
+        registers.put("MDR", new Register("00000000"));
+        registers.put("PC", new Register("00000000"));//from zero
+        registers.put("MBR", new Register("00000000"));
+        registers.put("SP", new Register("00000080"));//from 128
+        registers.put("LV", new Register("00000100"));//from 256
+        registers.put("CPP", new Register("00000180"));//from 384
+        registers.put("TOS", new Register("00000000"));
+        registers.put("OPC", new Register("00000000"));
+        registers.put("H", new Register("00000000"));
 
     }
 
-    /**
-     * 1- ki bayad bere ru baas (done)
-     * 2- az alu radesh kon (done)
-     * 3- az shifter radesh kon (done)
-     * 4- load e kia roshane ke meqdaare bus ro begiran (done)
-     * 5- inc o dec e kia active e? inc o dec shan (done, faqat methodaash mundan)
-     * 6- amaliat e ba memory anjaam she
-     *
-     * @param cto
-     * @return
-     */
-    public DataPathResponseObject exertCto(CTO cto) {
-
-        switch (cto.busSource) {
-            case 0:
-                aluInput1 = registers.get("PC");
+    void exertCto(CTO cto) {
+        switch (cto.getMem()){
+            case Read:
+                CPU.getInstance().getMemory().readData();
                 break;
-            case 1:
-                aluInput1 = registers.get("MDR");
+            case Fetch:
+                CPU.getInstance().getMemory().fetchInst();
                 break;
-            case 2:
-                aluInput1 = registers.get("MAR");
-                break;
-            case 3:
-                aluInput1 = registers.get("MBR");
-                break;
-            case 4:
-                aluInput1 = registers.get("SP");
-                break;
-            case 5:
-                aluInput1 = registers.get("SDR");
-                break;
-            case 6:
-                aluInput1 = registers.get("CPP");
-                break;
-            case 7:
-                aluInput1 = registers.get("LV");
+            case Write:
+                CPU.getInstance().getMemory().writeData();
                 break;
         }
-        //pathing from alu and shifter
-        busValue = shifter.path(cto.controlBits.get("shiftDirection"),
-                cto.shiftDistance,
-                alu.path(cto.aluControl, aluInput1, registers.get("SDR")));
-
-        Set<String> controlBits = cto.controlBits.keySet();
-        for (String controlBit : controlBits) {
-            if ((controlBit.contains("load")) && (cto.controlBits.get(controlBit))) {
-                registers.put(controlBit.substring(4) , busValue);
-            }
-            if ((controlBit.contains("inc")) && (cto.controlBits.get(controlBit))) {
-                String inced = hexInc(registers.get(controlBit.substring(3)));
-                registers.put(controlBit.substring(3) , inced);
-            }
-            if ((controlBit.contains("dec")) && (cto.controlBits.get(controlBit))) {
-                String deced = hexDec(registers.get(controlBit.substring(3)));
-                registers.put(controlBit.substring(3) , deced);
-            }
-            if ((controlBit.equals("memStart")) && (cto.controlBits.get(controlBit))) {
-                //TODO REZA INJA TA'AAMOL E BA MEMORY RO HARJUR SALAAH MIDUNI PIADE SAAZI KON.
+        this.busValue = this.getDataFromRegister(cto.getBusSource().toString(), cto.isINC(), cto.isDEC());
+        this.busValue = alu.path(cto.getAluControl(),this.busValue,registers.get("H").getValue());
+        this.busValue = shifter.path(cto.isShiftDirection(),cto.getShiftDistance(),this.busValue);
+        Set<String> writeBits = cto.getWriteBits().keySet();
+        for (String writeBit : writeBits) {
+            if (cto.getWriteBits().get(writeBit)) {
+                this.registers.put(writeBit, new Register(busValue));
             }
         }
-
-        //last lines
-        DataPathResponseObject dataPathResponseObject = new DataPathResponseObject();
-        dataPathResponseObject.setNeg(alu.isNeg());
-        dataPathResponseObject.setZero(alu.isZero());
-        dataPathResponseObject.setRegisters(registers);
-        return dataPathResponseObject;
+        CPU.getInstance().getState().setBusValue(this.busValue);
     }
 
-    private String hexInc (String input){
-        //todo implement
-        return "";
+    private String getDataFromRegister(String registerName, boolean INC, boolean DEC) {
+        if (INC && DEC) {
+            return this.registers.get(registerName).decThenGetValue();
+        } else if (INC) {
+            return this.registers.get(registerName).getValueThenInc();
+        } else if (DEC) {
+            return this.registers.get(registerName).getValueThenDec();
+        } else {
+            return this.registers.get(registerName).getValue();
+        }
     }
 
-    private String hexDec (String input){
-        //todo implement
-        return "";
+
+    String getReg(String registerName) {
+        return registers.get(registerName).getValue();
     }
 
+    void setRegisters(String registerName, String value){
+        this.registers.put(registerName, new Register(value));
+    }
 }
